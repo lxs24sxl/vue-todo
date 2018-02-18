@@ -24,14 +24,24 @@
  	检测平台，不同平台配置不同
 > npm install cross-env
 
+> npm i post-css-loader autoprefixer babel-loader babel-core
+
+> npm i babel-preset-env babel-plugin-transform-vue-jsx
+> npm i babel-helper-vue-jsx-merge-props
+
+
 ### vue.js重点知识
 
 - 双向绑定
 - vue文件开发方式
 - render方法
 
-## API重点
+#### API重点
 
 - 生命周期方法
 - computed
 	例如: 姓+名
+
+#### 笔记
+
+- 声明的变量需要放在顶层的组件里面

@@ -23,6 +23,10 @@ const config = {
 				loader: 'vue-loader'
 			},
 			{
+				test: /\.jsx$/,
+				loader: 'babel-loader'
+			},
+			{
 				test: /\.css$/,
 				use: [
 					'style-loader',
@@ -34,6 +38,13 @@ const config = {
 				use: [
 					'style-loader',
 					'css-loader',
+					{
+						loader: 'postcss-loader',
+						// 直接使用编译过的sourceMap
+						options: {
+							sourceMap: true
+						}
+					},
 					'stylus-loader'
 				]
 			},
