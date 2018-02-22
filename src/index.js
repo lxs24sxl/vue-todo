@@ -7,6 +7,9 @@ const root = document.createElement('div');
 document.body.appendChild( root );
 
 new Vue({
-	render: ( h ) => h( App )
+	// render: ( h ) => h( App )
+	render: function ( h ) {
+		return h(App)
+	}
 // $mount是挂载的意思
 }).$mount( root )

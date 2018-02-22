@@ -2,6 +2,9 @@
 const path = require('path');
 const HTMLPlugin = require('html-webpack-plugin');
 const webpack = require('webpack');
+// 非js代码的文件打包成一个文件夹
+const ExtractPlugin = require('extract-text-webpack-plugin');
+
 const isDev = process.env.NODE_ENV === 'development';
 
 const config = {
@@ -11,7 +14,7 @@ const config = {
 	entry: path.join(__dirname, 'src/index.js'),
 	output: {
 		// 打包成一个完整的js
-		filename: 'bundle.js',
+		filename: 'bundle.[hash:8].js',
 		path: path.join(__dirname, 'dist' )
 	},
 	// 加配置，让webpack理解vue文件类型
@@ -26,28 +29,13 @@ const config = {
 				test: /\.jsx$/,
 				loader: 'babel-loader'
 			},
-			{
-				test: /\.css$/,
-				use: [
-					'style-loader',
-					'css-loader'
-				]
-			},
-			{
-				test: /\.styl/,
-				use: [
-					'style-loader',
-					'css-loader',
-					{
-						loader: 'postcss-loader',
-						// 直接使用编译过的sourceMap
-						options: {
-							sourceMap: true
-						}
-					},
-					'stylus-loader'
-				]
-			},
+			// {
+			// 	test: /\.css$/,
+			// 	use: [
+			// 		'style-loader',
+			// 		'css-loader'
+			// 	]
+			// },
 			{
 				test: /\.(gif|jpg|jpeg|png|svg)$/,
 				'use': [
@@ -77,6 +65,23 @@ const config = {
 }
 
 if ( isDev ) {
+	// 开发环境
+	config.module.rules.push({
+				test: /\.styl/,
+				use: [
+					'style-loader',
+					'css-loader',
+					{
+						loader: 'postcss-loader',
+						// 直接使用编译过的sourceMap
+						options: {
+							sourceMap: true
+						}
+					},
+					'stylus-loader'
+				]
+			})
+
 	// 完整映射，编译会慢
 	config.devtool = '#cheap-module-eval-source-map'
 	// webpack2里面加上去的
@@ -101,6 +106,41 @@ if ( isDev ) {
 	config.plugins.push(
 		new webpack.HotModuleReplacementPlugin(),
 		new webpack.NoEmitOnErrorsPlugin()
+	)
+} else {
+	config.entry = {
+		app: path.join(__dirname, 'src/index.js'),
+		// vue-router
+		vendor: ['vue']
+	}
+	config.output.filename = '[name].[chunkhash:8].js'
+	config.module.rules.push(
+		{
+			test: /\.styl/,
+			use: ExtractPlugin.extract({
+				fallback: 'style-loader',
+				use: [
+					'css-loader',
+					{
+						loader: 'postcss-loader',
+						options: {
+							sourceMap: true,
+						}
+					},
+					'stylus-loader'
+				]
+			})
+		}
+	);
+	config.plugins.push(
+		new ExtractPlugin('styles.[contentHash:8].css'),
+		new webpack.optimize.CommonsChunkPlugin({
+			name: 'vuedor'
+		}),
+		// 新模块加入的时候，长缓存之前的代码
+		new webpack.optimize.CommonsChunkPlugin({
+			name: 'runtime'
+		})
 	)
 }
 

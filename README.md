@@ -29,6 +29,7 @@
 > npm i babel-preset-env babel-plugin-transform-vue-jsx
 > npm i babel-helper-vue-jsx-merge-props
 
+> npm i extract-text-webpack-plugin
 
 ### vue.js重点知识
 
@@ -45,3 +46,9 @@
 #### 笔记
 
 - 声明的变量需要放在顶层的组件里面
+
+### 总结
+
+- vue开发基本已经离不开webpack
+- 理解vue的重点不是api指令，而是过程
+- 眼界要放宽
